@@ -16,4 +16,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long>{
 	
 	@Query (value="select * from customer c where c.member_id =?1" , nativeQuery = true)
 	List<Customer> findByMemberId(Long memberId);
+	
+	@Query(value="select c from Customer c where c.customerNRC =?1")
+	List<Customer> findByNRC(String customerNRC);
 }

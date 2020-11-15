@@ -30,7 +30,7 @@ public class Loan {
 	private Guarantor guarantor;
 	@OneToOne
 	@JoinColumn(name = "loanPayment_id")
-	private LoanPayment loanPayment;
+	private LoanPaymentPolicy loanPaymentPolicy;
 
 	public long getId() {
 		return id;
@@ -72,18 +72,18 @@ public class Loan {
 		this.guarantor = guarantor;
 	}
 
-	public LoanPayment getLoanPayment() {
-		return loanPayment;
+	public LoanPaymentPolicy getLoanPayment() {
+		return loanPaymentPolicy;
 	}
 
-	public void setLoanPayment(LoanPayment loanPayment) {
-		this.loanPayment = loanPayment;
+	public void setLoanPayment(LoanPaymentPolicy loanPaymentPolicy) {
+		this.loanPaymentPolicy = loanPaymentPolicy;
 	}
 
 	@Override
 	public String toString() {
 		return "Loan [id=" + id + ", loandedDate=" + loandedDate + ", staff=" + staff + ", customer=" + customer
-				+ ", guarantor=" + guarantor + ", loanPayment=" + loanPayment + "]";
+				+ ", guarantor=" + guarantor + ", loanPayment=" + loanPaymentPolicy + "]";
 	}
 
 }

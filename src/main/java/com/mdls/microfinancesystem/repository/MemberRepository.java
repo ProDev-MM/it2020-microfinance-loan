@@ -12,4 +12,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
 	@Query(value = "Select m from Member m  where m.memberGroupName like concat('%',concat(?1,'%'))")
 	List<Member> searchMemberGroup(String memberGroupName);
+	
+	@Query(value="Select m from Member m  where m.memberGroupName = ?1")
+	List<Member> findByGroupName(String memberGroupName);
 }

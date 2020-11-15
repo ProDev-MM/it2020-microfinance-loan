@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mdls.microfinancesystem.constant.GlobalConstant;
 import com.mdls.microfinancesystem.entity.Member;
+import com.mdls.microfinancesystem.entity.Staff;
 import com.mdls.microfinancesystem.pojo.MemberPojo;
 import com.mdls.microfinancesystem.response.BaseResponse;
 import com.mdls.microfinancesystem.service.CustomerService;
@@ -34,22 +35,28 @@ public class MemberController {
 
 	@PostMapping(value = "/member")
 	public BaseResponse addMember(@RequestBody Member member) {
-
+		Member members;
 		try {
+			List<Member> groupName = memberService.findByGroupName(member.getMemberGroupName());
 
-			member = memberService.save(member);
+			if (groupName == null || !groupName.isEmpty() ) {
+
+				return new BaseResponse(GlobalConstant.FAIL, null, "Already exists!");
+			}
+
+			members = memberService.save(member);
 		} catch (Exception e) {
 			System.out.println("Error occur " + e.getMessage());
 			return new BaseResponse(1, null, "Error cannot create member");
 		}
-		return new BaseResponse(0, member, "Successfully created ");
+		return new BaseResponse(0, members, "Successfully created ");
 	}
 
 	@DeleteMapping(value = "/members/{id}")
 	public BaseResponse deleteById(@PathVariable Long id) {
 		try {
 			memberService.delete(id);
-		}catch(Exception e) {
+		} catch (Exception e) {
 			System.out.println("Error occur " + e.getMessage());
 			return new BaseResponse(1, null, "Error cannot delete member");
 		}
@@ -57,16 +64,26 @@ public class MemberController {
 	}
 
 	@PutMapping(value = "/members")
-	public Member updateMember(@RequestBody MemberPojo memberPojo) {
+	public BaseResponse updateMember(@RequestBody MemberPojo memberPojo) {
+		Member members;
+		try {
+			Member member = memberService.findById(memberPojo.getMemberId());
+			List<Member> groupName = memberService.findByGroupName(member.getMemberGroupName());
+			
+			member.setMemberGroupName(memberPojo.getMemberGroupName());
+			member.setMemberType(memberPojo.getMemberType());
+			
+			if (groupName == null || !groupName.isEmpty() ) {
 
-		Member member = memberService.findById(memberPojo.getMemberId());
-		if (member == null) {
-			return null;
+				return new BaseResponse(GlobalConstant.FAIL, null, "Already exists!");
+			}
+			members = memberService.save(member);
+			
+		} catch (Exception e) {
+			System.out.println("Error occur " + e.getMessage());
+			return new BaseResponse(GlobalConstant.FAIL, null, "Error cannot update member");
 		}
-		member.setMemberGroupName(memberPojo.getMemberGroupName());
-		member.setMemberType(memberPojo.getMemberType());
-		return memberService.save(member);
-
+		return new BaseResponse(GlobalConstant.SUCCESS, members , "Successfully updated ");
 	}
 
 	@GetMapping(value = "/members/{id}")

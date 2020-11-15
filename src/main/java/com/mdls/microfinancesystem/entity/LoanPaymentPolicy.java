@@ -8,7 +8,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "loanPayment")
-public class LoanPayment {
+public class LoanPaymentPolicy {
 	@Id
 	@GeneratedValue
 	long id;

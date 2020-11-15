@@ -42,5 +42,9 @@ public class MemberService {
 		// TODO Auto-generated method stub
 		return memberRepository.searchMemberGroup(memberGroupName);
 	}
+	
+	public List<Member> findByGroupName(String memberGroupName){
+		return memberRepository.findByGroupName(memberGroupName);
+	}
 
 }

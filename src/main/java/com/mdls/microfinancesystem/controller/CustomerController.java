@@ -44,8 +44,12 @@ public class CustomerController {
 	public BaseResponse addCustomer(@RequestBody CustomerPojo customerPojo) {
 
 		try {
+			List<Customer> nrc = customerService.findbyNRC(customerPojo.getCustomerNRCNo());
+			if (nrc == null || !nrc.isEmpty()) {
 
-			customerPojo = customerService.save(customerPojo,false);
+				return new BaseResponse(GlobalConstant.FAIL, null, "NRC already exists!");
+			}
+			customerPojo = customerService.save(customerPojo, false);
 		} catch (Exception e) {
 			System.out.println("Error occur " + e.getMessage());
 			return new BaseResponse(GlobalConstant.FAIL, null, "Error cannot create customer");
@@ -59,20 +63,23 @@ public class CustomerController {
 	}
 
 	@PutMapping(value = "/customer")
-	public CustomerPojo updateCustomer(@RequestBody CustomerPojo customerPojo) {
+	public BaseResponse updateCustomer(@RequestBody CustomerPojo customerPojo) {
 
-		Customer customer = customerService.findById(customerPojo.getId());
-		if (customer == null) {
-			return null;
+		try {
+			Customer customer = customerService.findById(customerPojo.getId());
+			List<Customer> nrc = customerService.findbyNRC(customerPojo.getCustomerNRCNo());
+
+			if (customer == null || nrc == null || !nrc.isEmpty()) {
+				return new BaseResponse(GlobalConstant.FAIL, null, "NRC already exists!");
+
+			}
+
+			customerPojo = customerService.save(customerPojo, true);
+		} catch (Exception e) {
+			System.out.println("Error occur " + e.getMessage());
+			return new BaseResponse(GlobalConstant.FAIL, null, "Error cannot create customer");
 		}
-//		customer.setCustomerName(customerPojo.getCustomerName());
-//		customer.setCustomerAddress(customerPojo.getCustomerAddress());
-//		customer.setCustomerNRC(customerPojo.getCustomerNRCNo());
-//		customer.setCustomerPhone(customerPojo.getCustomerPhone());
-//		customer.setCustomerOccupation(customerPojo.getCustomerOccupation());
-
-		return customerService.save(customerPojo,true);
-
+		return new BaseResponse(GlobalConstant.SUCCESS, customerPojo, "Successfully created ");
 	}
 
 	@GetMapping(value = "/customers/{id}")

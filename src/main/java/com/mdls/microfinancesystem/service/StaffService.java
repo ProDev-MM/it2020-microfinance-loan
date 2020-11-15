@@ -16,9 +16,7 @@ public class StaffService {
 		return staffRepository.findAll();
 	}
 
-	public Staff save(Staff staff) {
-		return staffRepository.save(staff);
-	}
+	
 
 	public void delete(Long id) {
 		staffRepository.deleteById(id);
@@ -30,6 +28,24 @@ public class StaffService {
 
 	public Staff findById(Long id) {
 		return staffRepository.findById(id).orElse(null);
+	}
+
+	public List<Staff> findByNRC(String staffNRCNo) {
+return staffRepository.findByNRC(staffNRCNo);
+	}
+
+
+
+	public List<Staff> findByEmail(String staffEmail) {
+		// TODO Auto-generated method stub
+		return staffRepository.findByEmail(staffEmail);
+	}
+
+
+
+	public Staff save(Staff staff) {
+		// TODO Auto-generated method stub
+		return staffRepository.save(staff);
 	}
 
 }

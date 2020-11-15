@@ -7,11 +7,13 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mdls.microfinancesystem.constant.GlobalConstant;
 import com.mdls.microfinancesystem.entity.Staff;
+import com.mdls.microfinancesystem.pojo.StaffPojo;
 import com.mdls.microfinancesystem.response.BaseResponse;
 import com.mdls.microfinancesystem.service.StaffService;
 
@@ -27,8 +29,24 @@ public class StaffController {
 	}
 
 	@PostMapping(value = "/staff")
-	public Staff createStaff(@RequestBody Staff staff) {
-		return staffService.save(staff);
+	public BaseResponse createStaff(@RequestBody Staff staff) {
+		Staff staffs;
+		try {
+			List<Staff> email = staffService.findByEmail(staff.getStaffEmail());
+			List<Staff> nrc = staffService.findByNRC(staff.getStaffNRCNo());
+
+			if (email == null || !email.isEmpty() || nrc == null || !nrc.isEmpty()) {
+
+				return new BaseResponse(GlobalConstant.FAIL, null, "Already exists!");
+			}
+			
+
+			staffs = staffService.save(staff);
+		} catch (Exception e) {
+			System.out.println("Error occur " + e.getMessage());
+			return new BaseResponse(GlobalConstant.FAIL, null, "Error cannot create staff");
+		}
+		return new BaseResponse(GlobalConstant.SUCCESS, staffs, "Successfully created ");
 	}
 
 	@DeleteMapping(value = "/staff/{id}")
@@ -48,9 +66,36 @@ public class StaffController {
 			staff = staffService.findById(id);
 		} catch (Exception e) {
 			System.out.println("Error occur " + e.getMessage());
-			return new BaseResponse(GlobalConstant.FAIL, null, "Error cannot create staff");
+			return new BaseResponse(GlobalConstant.FAIL, null, "Error cannot get staff");
 		}
-		return new BaseResponse(GlobalConstant.SUCCESS, staff, "Successfully created ");
+		return new BaseResponse(GlobalConstant.SUCCESS, staff, "Successfully  ");
+	}
+
+	@PutMapping(value = "/staff")
+	public BaseResponse updateStaff(@RequestBody StaffPojo staffPojo) {
+		Staff staffs;
+		try {
+			Staff staff = staffService.findById(staffPojo.getId());
+			List<Staff> email = staffService.findByEmail(staffPojo.getStaffEmail());
+			List<Staff> nrc = staffService.findByNRC(staffPojo.getStaffNRCNo());
+
+			
+			staff.setStaffAddress(staffPojo.getStaffAddress());
+			staff.setStaffEmail(staffPojo.getStaffEmail());
+			staff.setStaffName(staffPojo.getStaffName());
+			staff.setStaffNRCNo(staffPojo.getStaffNRCNo());
+			staff.setStaffPassword(staffPojo.getStaffPassword());
+			staff.setStaffPhone(staffPojo.getStaffPhone());
+          if (staff == null || email == null || !email.isEmpty() || nrc == null || !nrc.isEmpty()) {
+				
+				return new BaseResponse(GlobalConstant.FAIL, null, "Already exists!");
+			}
+			staffs = staffService.save(staff);
+		} catch (Exception e) {
+			System.out.println("Error occur " + e.getMessage());
+			return new BaseResponse(GlobalConstant.FAIL, null, "Error cannot update staff");
+		}
+		return new BaseResponse(GlobalConstant.SUCCESS, staffs, "Successfully created ");
 	}
 
 }

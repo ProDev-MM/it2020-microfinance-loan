@@ -65,4 +65,8 @@ public class CustomerService {
 	public List<Customer> findByMemberId(Long memberId) {
 		return customerRepository.findByMemberId(memberId);
 	}
+	
+	public List<Customer> findbyNRC(String customerNRC){
+		return customerRepository.findByNRC(customerNRC);
+	}
 }
