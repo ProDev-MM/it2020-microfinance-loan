@@ -12,4 +12,7 @@ public interface GuarantorRepository extends JpaRepository<Guarantor, Long> {
 
 	@Query(value = "Select g from Guarantor g where g.guarantorName like concat('%',concat(?1,'%'))")
 	List<Guarantor> searchGuarantor(String guarantorName);
+	
+	@Query(value = "Select g from Guarantor g where g.guarantorNRC =?1")
+	List<Guarantor> findByNRC(String guarantorNRC);
 }

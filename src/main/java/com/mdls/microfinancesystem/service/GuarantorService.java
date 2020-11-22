@@ -36,4 +36,7 @@ public class GuarantorService {
 		return guarantorRepository.searchGuarantor(guarantorName);
 	}
 
+	public List<Guarantor> findByNRC(String guarantorNRC) {
+		return guarantorRepository.findByNRC(guarantorNRC);
+	}
 }

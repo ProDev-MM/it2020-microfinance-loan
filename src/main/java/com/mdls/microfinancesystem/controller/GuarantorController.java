@@ -15,8 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mdls.microfinancesystem.constant.GlobalConstant;
 
 import com.mdls.microfinancesystem.entity.Guarantor;
-
+import com.mdls.microfinancesystem.entity.Staff;
 import com.mdls.microfinancesystem.pojo.GuarantorPojo;
+import com.mdls.microfinancesystem.pojo.StaffPojo;
 import com.mdls.microfinancesystem.response.BaseResponse;
 import com.mdls.microfinancesystem.service.GuarantorService;
 
@@ -34,14 +35,21 @@ public class GuarantorController {
 
 	@PostMapping(value = "/guarantor")
 	public BaseResponse addGuarantor(@RequestBody Guarantor guarantor) {
-
+Guarantor guarantors;
 		try {
-			guarantor = guarantorService.save(guarantor);
+			List<Guarantor> nrc= guarantorService.findByNRC(guarantor.getGuarantorNRC());
+			
+			if(nrc==null || !nrc.isEmpty()) {
+				
+				return new BaseResponse(1, null, "NRC already exists!");
+
+			}
+			guarantors = guarantorService.save(guarantor);
 		} catch (Exception e) {
 			System.out.println("Error occur " + e.getMessage());
 			return new BaseResponse(1, null, "Error cannot create guarantor");
 		}
-		return new BaseResponse(0, guarantor, "Successfully created ");
+		return new BaseResponse(0, guarantors, "Successfully created ");
 	}
 
 	@DeleteMapping(value = "/guarantors/{id}")
@@ -50,20 +58,31 @@ public class GuarantorController {
 	}
 
 	@PutMapping(value = "/guarantors")
-	public Guarantor updateGuarantor(@RequestBody GuarantorPojo guarantorPojo) {
-
-		Guarantor guarantor = guarantorService.findById(guarantorPojo.getGuarantorId());
-		if (guarantor == null) {
-			return null;
+	public BaseResponse updateGuarantor(@RequestBody GuarantorPojo guarantorPojo) {
+		
+			Guarantor guarantors;
+			try {
+				Guarantor guarantor = guarantorService.findById(guarantorPojo.getGuarantorId());
+				List<Guarantor> nrc = guarantorService.findByNRC(guarantorPojo.getGuarantorNRCNo());
+				
+				guarantor.setGuarantorAddress(guarantorPojo.getGuarnatorAddress());
+				guarantor.setGuarantorName(guarantorPojo.getGuarantorName());
+				guarantor.setGuarantorNRC(guarantorPojo.getGuarantorNRCNo());
+				guarantor.setGuarantorOccupation(guarantorPojo.getGuarantorOccupation());
+				guarantor.setGuarantorPhone(guarantorPojo.getGuarantorPhone());
+				
+	          if (guarantor==null || nrc==null || !nrc.isEmpty()) {
+					
+					return new BaseResponse(GlobalConstant.FAIL, null, "NRC already exists!");
+				}
+				guarantors = guarantorService.save(guarantor);
+			} catch (Exception e) {
+				System.out.println("Error occur " + e.getMessage());
+				return new BaseResponse(GlobalConstant.FAIL, null, "Error cannot update staff");
+			}
+			return new BaseResponse(GlobalConstant.SUCCESS, guarantors, "Successfully created ");
 		}
-		guarantor.setGuarantorName(guarantorPojo.getGuarantorName());
-		guarantor.setGuarantorNRC(guarantorPojo.getGuarantorNRCNo());
-		guarantor.setGuarantorAddress(guarantorPojo.getGuarnatorAddress());
-		guarantor.setGuarantorPhone(guarantorPojo.getGuarantorPhone());
-		guarantor.setGuarantorOccupation(guarantorPojo.getGuarantorOccupation());
-		return guarantorService.save(guarantor);
 
-	}
 
 	@GetMapping(value = "/guarantors/{id}")
 	public BaseResponse getById(@PathVariable Long id) {
