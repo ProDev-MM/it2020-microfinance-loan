@@ -21,6 +21,7 @@ import com.mdls.microfinancesystem.service.CustomerService;
 import com.mdls.microfinancesystem.service.MemberService;
 
 @RestController
+@CrossOrigin
 public class MemberController {
 	@Autowired
 	MemberService memberService;
@@ -67,13 +68,13 @@ public class MemberController {
 	public BaseResponse updateMember(@RequestBody MemberPojo memberPojo) {
 		Member members;
 		try {
-			Member member = memberService.findById(memberPojo.getMemberId());
+			Member member = memberService.findById(memberPojo.getId());
 			List<Member> groupName = memberService.findByGroupName(member.getMemberGroupName());
 			
 			member.setMemberGroupName(memberPojo.getMemberGroupName());
 			member.setMemberType(memberPojo.getMemberType());
 			
-			if (groupName == null || !groupName.isEmpty() ) {
+			if (member ==null ||groupName == null || !groupName.isEmpty() ) {
 
 				return new BaseResponse(GlobalConstant.FAIL, null, "Already exists!");
 			}

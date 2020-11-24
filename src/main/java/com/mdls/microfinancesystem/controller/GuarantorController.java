@@ -22,6 +22,7 @@ import com.mdls.microfinancesystem.response.BaseResponse;
 import com.mdls.microfinancesystem.service.GuarantorService;
 
 @RestController
+@CrossOrigin
 public class GuarantorController {
 
 	@Autowired
