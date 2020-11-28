@@ -1,15 +1,14 @@
 package com.mdls.microfinancesystem.pojo;
 
 public class MemberPojo {
-Long id;
+Long memberId;
 String memberType;
 String memberGroupName;
-
-public Long getId() {
-	return id;
+public Long getMemberId() {
+	return memberId;
 }
-public void setId(Long id) {
-	this.id = id;
+public void setMemberId(Long memberId) {
+	this.memberId = memberId;
 }
 public String getMemberType() {
 	return memberType;
